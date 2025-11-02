@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>جستجوی پرواز</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@0.1.8/dist/persian-date.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.js"></script>
+
+    <style>
+        .pwt-datepicker-container {
+            z-index: 9999 !important;
+            display: block !important;
+        }
+    </style>
+</head>
+<body style="direction: rtl; text-align: right; padding: 2rem;">
+
+<h2>✈️ جستجوی پرواز</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>مبدا:</label>
+    <input type="text" name="origin" placeholder="مثلاً MHD" required><br><br>
+
+    <label>مقصد:</label>
+    <input type="text" name="destination" placeholder="مثلاً THR" required><br><br>
+
+    <label>تاریخ رفت:</label>
+    <input type="text" id="departing" name="departing" required><br><br>
+
+    <label>تاریخ برگشت:</label>
+    <input type="text" id="returning" name="returning"><br><br>
+
+    <button type="submit">جستجو</button>
+</form>
+{% if flights %}
+<h3>نتایج پرواز</h3>
+<table border="1" cellpadding="8">
+    <tr>
+        <th>ساعت حرکت</th>
+        <th>قیمت</th>
+    </tr>
+    {% for f in flights %}
+    <tr {% if f.is_full %}style="background-color:#eee;"{% endif %}>
+        <td>{{ f.dep_time }}</td>
+        <td>{{ f.price_text }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+<script>
+    $(function() {
+        $("#departing").persianDatepicker({ format: 'YYYY-MM-DD' });
+        $("#returning").persianDatepicker({ format: 'YYYY-MM-DD' });
+    });
+</script>
+</body>
+</html>

@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>جستجوی پرواز</title>
 </head>
-<body>
+<body style="direction: rtl; text-align: right;">
+    <h2>جستجوی پرواز</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">جستجو</button>
+    </form>
 
+    {% if flights %}
+        <h3>نتایج:</h3>
+        <table border="1" cellpadding="8">
+            <tr><th>ساعت حرکت</th><th>قیمت</th></tr>
+            {% for f in flights %}
+            <tr {% if f.is_full %}style="background-color:#eee"{% endif %}>
+                <td>{{ f.dep_time }}</td>
+                <td>{{ f.price_text }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 </body>
 </html>
