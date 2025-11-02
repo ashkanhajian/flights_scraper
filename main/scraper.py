@@ -23,9 +23,9 @@ def scrape_alibaba_flights(origin_code, dest_code, depart_date, return_date=None
         headless (bool): اجرای مرورگر در حالت headless
 
     Returns:
-        list of dict: هر پرواز شامل dep_time، price_text، price_value، is_full، link
+        list of dict:  dep_time، price_text، price_value، is_full، link
     """
-    print(f"🟢 Launching scraper for {origin_code} → {dest_code} on {depart_date}")
+    print(f" Launching scraper for {origin_code} → {dest_code} on {depart_date}")
     
     options = webdriver.ChromeOptions()
     if headless:
@@ -48,7 +48,7 @@ def scrape_alibaba_flights(origin_code, dest_code, depart_date, return_date=None
 
         wait = WebDriverWait(driver, 30)
         wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='app']//section")))
-        time.sleep(3)  # کمی صبر برای لود کامل پروازها
+        time.sleep(3)  
 
         parent_xpath = "//*[@id='app']//section//div[4]/div"
         blocks = driver.find_elements(By.XPATH, parent_xpath)
@@ -58,12 +58,12 @@ def scrape_alibaba_flights(origin_code, dest_code, depart_date, return_date=None
             try:
                 bx = f"({parent_xpath})[{i}]"
 
-                # استخراج ساعت حرکت
+               
                 dep_time = driver.find_element(
                     By.XPATH, bx + "//div/div/div[1]/div/div[2]/div[2]/div[1]"
                 ).text.strip()
 
-                # استخراج لینک مستقیم پرواز (دکمه انتخاب)
+                
                 try:
                     select_button = driver.find_element(By.XPATH, bx + "//div[2]/div[1]/div/div[2]/button")
                     flight_link = select_button.get_attribute("onclick")
@@ -78,7 +78,7 @@ def scrape_alibaba_flights(origin_code, dest_code, depart_date, return_date=None
                 except:
                     flight_link = url
 
-                # استخراج قیمت و وضعیت تکمیل ظرفیت
+            
                 try:
                     price_text = driver.find_element(
                         By.XPATH, bx + "//div/div[2]/div[1]/div/span/strong"
@@ -86,7 +86,7 @@ def scrape_alibaba_flights(origin_code, dest_code, depart_date, return_date=None
                     price_value = extract_number(price_text)
                     is_full = False
                 except:
-                    price_text = "تکمیل ظرفیت 💸"
+                    price_text = "تکمیل ظرفیت "
                     price_value = float("inf")
                     is_full = True
 
@@ -105,7 +105,7 @@ def scrape_alibaba_flights(origin_code, dest_code, depart_date, return_date=None
                 print(f"{i}. ⚠️ Skipped: {e}")
                 continue
 
-        # مرتب‌سازی بر اساس تکمیل ظرفیت، قیمت و ساعت حرکت
+
         results.sort(key=lambda x: (x["is_full"], x["price_value"], x["dep_time"]))
         return results
 
@@ -116,7 +116,7 @@ def scrape_alibaba_flights(origin_code, dest_code, depart_date, return_date=None
         driver.quit()
 
 
-# مثال اجرا
+
 if __name__ == "__main__":
     flights = scrape_alibaba_flights("MHD", "THR", "1404-08-14", "1404-08-15", headless=True)
     print("\n📋 Scraped flights:")
