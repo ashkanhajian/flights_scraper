@@ -15,11 +15,20 @@
     {% if flights %}
         <h3>نتایج:</h3>
         <table border="1" cellpadding="8">
-            <tr><th>ساعت حرکت</th><th>قیمت</th></tr>
+            <tr>
+                <th>ساعت حرکت</th>
+                <th>قیمت</th>
+            </tr>
             {% for f in flights %}
             <tr {% if f.is_full %}style="background-color:#eee"{% endif %}>
                 <td>{{ f.dep_time }}</td>
-                <td>{{ f.price_text }}</td>
+                <td>
+                    {% if not f.is_full %}
+                        <a href="{{ f.link }}" target="_blank">{{ f.price_text }}</a>
+                    {% else %}
+                        {{ f.price_text }}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>
